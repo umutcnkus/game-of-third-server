@@ -1,0 +1,10 @@
+{
+    "name": "socket-game",
+    "version": "0.0.1",
+    "description": "Game of Third",
+    "dependencies": {
+        "@types/socket.io": "^2.1.11",
+        "express": "^4.15.2",
+        "socket.io": "^3.0.1"
+    }
+}
