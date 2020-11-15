@@ -1,13 +1,14 @@
-var app = require('express')();
-var http = require('http').createServer(app);
-const io = require("socket.io")(http, {
+const port = process.env.PORT || 8888;
+const server = require('http').createServer();
+
+const io = require("socket.io")(server, {
     cors: {
-        cors:true,
-        origin: "*",
-        methods: ["GET", "POST"],
-        credentials: true
+      origin: "http://localhost:3000",
+      methods: ["GET", "POST"],
+      credentials: true
     }
-});
+  });
+
 
 io.on('connection', (socket) => {    
     socket.on("create-game", () => {
@@ -31,7 +32,4 @@ io.on('connection', (socket) => {
     })
 });
 
-
-http.listen(process.env.PORT || 80, () => {
-    console.log('listening on *:1234');
-});
+server.listen(port);
