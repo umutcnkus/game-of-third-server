@@ -8,31 +8,29 @@ const io = require("socket.io")(http, {
     }
 });
 
-io.on('connection', (socket) => {
-    console.log('a user connected');
-    socket.on('newGame', () => {
-        socket.roomId = socket.id
-        socket.isHost = true;
-        socket.emit("room-created", { gameId: socket.id })
-    });
-    socket.on('join-game', (params) => {
+io.on('connection', (socket) => {    
+    socket.on("create-game", () => {
+        socket.emit("room-created", {roomId: socket.id})
+    })
+
+    socket.on("join-game", (params) => {
         socket.join(params.roomId);
-        socket.roomId = params.roomId;
-        socket.isHost = false;
-        socket.emit("join-game", { gameId: socket.roomId });
-        io.to(socket.roomId).emit("game-started", { total: Math.floor((Math.random() * 1000) + 1) })
-    });
-    socket.on('moved', (params) => {
+        socket.emit("game-accepted", {roomId: params.roomId});
+        socket.to(params.roomId).emit("user-joined")
+    })
+
+    socket.on('initialize', (params) => {
         console.log(params);
-        const { previousValue, playedMove } = params;
-        const newValue = (previousValue + playedMove) / 3;
-        const remainder = (previousValue + playedMove) % 3;
-        const isFinished = newValue == 1;
-        io.to(socket.roomId).emit("move-played", { played: playedMove, oldValue: previousValue, newValue: remainder, isFinished: isFinished })
+        io.to(params.roomId).emit("game-started", {initialValue: params.initialValue})
+    })
+
+    socket.on("make-move", (params) => {
+        console.log('Move Received', params)
+        io.to(params.roomId).emit("move-received", params);
     })
 });
 
 
-http.listen(1234, () => {
+http.listen(1234,"192.168.1.145", () => {
     console.log('listening on *:1234');
 });
