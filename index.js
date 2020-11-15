@@ -31,6 +31,6 @@ io.on('connection', (socket) => {
 });
 
 
-http.listen(80, () => {
+http.listen(process.env.PORT || 80, () => {
     console.log('listening on *:1234');
 });
