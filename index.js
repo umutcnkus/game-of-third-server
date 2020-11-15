@@ -3,7 +3,7 @@ const server = require('http').createServer();
 
 const io = require("socket.io")(server, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000", "https://umutcnkus.github.io/game-of-third"],
       methods: ["GET", "POST"],
       credentials: true
     }
